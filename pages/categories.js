@@ -1,8 +1,8 @@
 import Layout from "@/components/Layout";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { withSawl } from "sweetalert2";
-function Categories() {
+import Swal from "sweetalert2";
+export default function Categories() {
     const [editedCategory, setEditedCategory] = useState(null)
     const [name, setName] = useState('')
     const [categories, setCategories] = useState([]);
@@ -41,6 +41,23 @@ function Categories() {
         setName(category.name)
         setParentCategory(category?.parent?._id)
     }
+    const deleteCategory = (category) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `Do you want to delete ${category.name}?`,
+            showCancelButton: true,
+            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Yes, Delete!',
+            confirmButtonColor: '#d55',
+            reverseButtons: true,
+        }).then(async result => {
+            if (result.isConfirmed) {
+                const { _id } = category;
+                await axios.delete('/api/category?_id=' + _id);
+                updateCategories();
+            }
+        });
+    }
     return (
         <Layout>
             <h1>Categories</h1>
@@ -68,7 +85,7 @@ function Categories() {
                             <td>{category?.parent?.name}</td>
                             <td>
                                 <button className="btn-primary mr-1" onClick={() => editCategory(category)}>Edit</button>
-                                <button className="btn-primary">Delete</button>
+                                <button className="btn-primary" onClick={() => deleteCategory(category)}>Delete</button>
                             </td>
                         </tr>
                     ))}
@@ -79,6 +96,3 @@ function Categories() {
     )
 }
 
-export default withSawl(({ swal }, ref) => {
-    <Categories />
-})
