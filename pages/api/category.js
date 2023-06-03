@@ -29,6 +29,11 @@ export default async function handle(req, res) {
         return res.status(200).json(categoryDoc);
     }
 
+    if (method === "DELETE") {
+        const { _id } = req.query;
+        await Category.deleteOne({ _id })
+        return res.status(203).json("Deleted!")
+    }
 
     if (method === "GET") {
         const data = await Category.find().populate("parent");
