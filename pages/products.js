@@ -15,7 +15,7 @@ export default function products() {
     console.log(products)
     return (
         <Layout>
-            <Link className="bg-blue-900 text-white rounded-md py-1 px-2" href={"/products/new"}>Add New Product</Link>
+            <Link className="btn-primary" href={"/products/new"}>Add New Product</Link>
             <table className="basic mt-2">
                 <thead>
                     <tr>
@@ -28,8 +28,8 @@ export default function products() {
                         <tr key={product._id}>
                             <td>{product.title}</td>
                             <td>
-                                <Link href={'/products/edit/' + product._id}><Icon className="h-4 w-4" />Edit</Link>
-                                <Link href={'/products/delete/' + product._id}><TIcon className="h-4 w-4" />Delete</Link>
+                                <Link className="btn-default" href={'/products/edit/' + product._id}><Icon className="h-4 w-4" />Edit</Link>
+                                <Link className="btn-red" href={'/products/delete/' + product._id}><TIcon className="h-4 w-4" />Delete</Link>
                             </td>
                         </tr>
                     ))}
