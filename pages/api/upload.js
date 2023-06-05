@@ -5,7 +5,7 @@ import axios from "axios";
 export default async function handle(req, res) {
     console.log("hello")
     await mongooseConnect();
-    // await isAdminRequest();
+    await isAdminRequest(req, res);
     const form = new multiparty.Form();
     const { fields, files } = await new Promise((resolve, reject) => {
         form.parse(req, (err, fields, files) => {
