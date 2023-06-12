@@ -4,15 +4,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Icon from "@heroicons/react/24/solid/PencilSquareIcon"
 import TIcon from "@heroicons/react/24/solid/TrashIcon"
-export default function products() {
-    const [products, setproducts] = useState([])
-    useEffect(() => {
-        axios.get("/api/products").then((res) => {
-            setproducts(res.data)
-        })
-
-    }, [])
-    console.log(products)
+import { getSession, useSession } from "next-auth/react";
+function products({ data, session }) {
+    console.log(data)
     return (
         <Layout>
             <Link className="btn-primary" href={"/products/new"}>Add New Product</Link>
@@ -24,7 +18,7 @@ export default function products() {
                     </tr>
                 </thead>
                 <tbody>
-                    {products.map((product) => (
+                    {data.map((product) => (
                         <tr key={product._id}>
                             <td>{product.title}</td>
                             <td>
@@ -39,3 +33,20 @@ export default function products() {
         </Layout>
     )
 }
+export async function getServerSideProps(context) {
+
+    const response = await axios.get(process.env.NEXT_APP_URL + "/api/products");
+    const data = response.data;
+    return {
+        props: {
+            data,
+        },
+    };
+
+}
+
+
+
+
+
+export default products;

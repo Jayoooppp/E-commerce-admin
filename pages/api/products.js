@@ -5,7 +5,8 @@ import { isAdminRequest } from "./auth/[...nextauth]";
 export default async function handle(req, res) {
     const { method } = req;
     await mongooseConnect();
-    await isAdminRequest(req, res);
+    // await isAdminRequest(req, res);
+
     if (method === "GET") {
         if (req.query?.id) {
             res.json(await Product.findById(req.query.id))
@@ -24,7 +25,6 @@ export default async function handle(req, res) {
     }
 
     if (method === "PUT") {
-        console.log(req.body)
         const { title, description, price, id, images, category, properties } = req.body;
         await Product.updateOne({ _id: id }, { title, description, price, images, category, properties });
         res.json(true);

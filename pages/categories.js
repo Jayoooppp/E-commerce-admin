@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Icon from "@heroicons/react/24/solid/PencilSquareIcon"
 import TIcon from "@heroicons/react/24/solid/TrashIcon"
-export default function Categories() {
+export default function Categories({ data }) {
     const [editedCategory, setEditedCategory] = useState(null)
     const [name, setName] = useState('')
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState(data || []);
     const [parentCategory, setParentCategory] = useState("");
     const [properties, setProperties] = useState([])
 
@@ -17,9 +17,9 @@ export default function Categories() {
             setCategories(res.data);
         })
     }
-    useEffect(() => {
-        updateCategories()
-    }, [])
+    // useEffect(() => {
+    //     updateCategories()
+    // }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -64,7 +64,6 @@ export default function Categories() {
     const removeProperty = (index) => {
         const new_prop = [...properties];
         new_prop.splice(index, 1);
-        console.log(new_prop)
         setProperties(new_prop)
     }
 
@@ -174,3 +173,14 @@ export default function Categories() {
     )
 }
 
+
+export async function getServerSideProps() {
+    const response = await axios.get(process.env.NEXT_APP_URL + "/api/category")
+    const data = response.data;
+    return {
+        props: {
+            data,
+        },
+    };
+
+}

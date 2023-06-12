@@ -8,7 +8,7 @@ export default function Home() {
         Hello, <b>{session?.user?.name}</b>
       </h2>
       <div className="flex bg-gray-300 gap-1 text-black rounded-lg overflow-hidden">
-        <img src={session?.user?.image} alt="" className="w-6 h-8 " referrerpolicy="no-referrer" />
+        <img src={session?.user?.image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"} alt="" className="w-6 h-8 " referrerpolicy="no-referrer" />
         <span className="py-1 px-2">
           {session?.user?.name}
         </span>
