@@ -6,7 +6,7 @@ export default async function handle(req, res) {
     await mongooseConnect();
     const { method } = req;
 
-    await isAdminRequest(req, res);
+    // await isAdminRequest(req, res);
     if (method === "POST") {
         const { name, parentCategory, properties } = req.body;
         let categoryDoc;
@@ -21,7 +21,6 @@ export default async function handle(req, res) {
 
     if (method === "PUT") {
         const { name, parentCategory, _id, properties } = req.body;
-        console.log(req.body)
         let categoryDoc;
         if (parentCategory !== "") {
             categoryDoc = await Category.updateOne({ _id }, { name, parent: parentCategory, properties });
