@@ -2,12 +2,12 @@ import Layout from "@/components/Layout";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import Icon from "@heroicons/react/24/solid/PencilSquareIcon"
-import TIcon from "@heroicons/react/24/solid/TrashIcon"
-export default function Categories({ data }) {
+import { getSession } from "next-auth/react";
+import Spinner from "@/components/Spinner2";
+export default function Categories() {
     const [editedCategory, setEditedCategory] = useState(null)
     const [name, setName] = useState('')
-    const [categories, setCategories] = useState(data || []);
+    const [categories, setCategories] = useState([]);
     const [parentCategory, setParentCategory] = useState("");
     const [properties, setProperties] = useState([])
 
@@ -17,9 +17,9 @@ export default function Categories({ data }) {
             setCategories(res.data);
         })
     }
-    // useEffect(() => {
-    //     updateCategories()
-    // }, [])
+    useEffect(() => {
+        updateCategories()
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -103,83 +103,102 @@ export default function Categories({ data }) {
             }
         });
     }
-    return (
-        <Layout>
-            <h1>Categories</h1>
-            <label>{editedCategory ? `Edit Category ${editedCategory?.name}` : `Create New Category`}</label>
-            <form onSubmit={handleSubmit} className="">
-                <div className="flex gap-1">
+    if (categories?.length > 0) {
 
-                    <input className="" type="text" placeholder="Category Name" value={name} onChange={e => setName(e.target.value)} />
-                    <select className="" value={parentCategory} onChange={(e) => { setParentCategory(e.target.value) }}>
-                        <option value="">No Parent</option>
-                        {categories?.map((category, i) => (
-                            <option value={category._id} key={i}>{category.name}</option>
+        return (
+            <Layout>
+                <h1>Categories</h1>
+                <label>{editedCategory ? `Edit Category ${editedCategory?.name}` : `Create New Category`}</label>
+                <form onSubmit={handleSubmit} className="">
+                    <div className="flex gap-1">
+
+                        <input className="" type="text" placeholder="Category Name" value={name} onChange={e => setName(e.target.value)} />
+                        <select className="" value={parentCategory} onChange={(e) => { setParentCategory(e.target.value) }}>
+                            <option value="">No Parent</option>
+                            {categories?.map((category, i) => (
+                                <option value={category._id} key={i}>{category.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="mb-2">
+                        <label className="block">Properties</label>
+                        <button onClick={addNewProperty} type="button" className="btn-default text-sm mb-2">Add New Property</button>
+                        {properties.length > 0 && properties.map((property, i) => (
+                            <div className="flex gap-1 mb-2">
+                                <input value={property.name} className="mb-0" type="text" placeholder="Property name (Example:color)" onChange={(e) => handlePropertyNameChange(i, e.target.value)} />
+                                <input value={property.values} className="mb-0" type="text" placeholder="values, comma separated" onChange={(e) => handlePropertyValueChange(i, e.target.value)} />
+                                <button type="button" className="mb-0 btn-red" onClick={() => removeProperty(i)}>Remove</button>
+                            </div>
                         ))}
-                    </select>
-                </div>
-                <div className="mb-2">
-                    <label className="block">Properties</label>
-                    <button onClick={addNewProperty} type="button" className="btn-default text-sm mb-2">Add New Property</button>
-                    {properties.length > 0 && properties.map((property, i) => (
-                        <div className="flex gap-1 mb-2">
-                            <input value={property.name} className="mb-0" type="text" placeholder="Property name (Example:color)" onChange={(e) => handlePropertyNameChange(i, e.target.value)} />
-                            <input value={property.values} className="mb-0" type="text" placeholder="values, comma separated" onChange={(e) => handlePropertyValueChange(i, e.target.value)} />
-                            <button type="button" className="mb-0 btn-red" onClick={() => removeProperty(i)}>Remove</button>
-                        </div>
-                    ))}
-                </div>
-                <div className="flex gap-1">
-                    {editedCategory && (
-                        <button type="button"
-                            onClick={() => {
-                                setEditedCategory(null)
-                                setParentCategory("")
-                                setProperties([])
-                                setName("")
-                            }}
-                            className="btn-default" >
-                            Cancel
-                        </button>
-                    )}
+                    </div>
+                    <div className="flex gap-1">
+                        {editedCategory && (
+                            <button type="button"
+                                onClick={() => {
+                                    setEditedCategory(null)
+                                    setParentCategory("")
+                                    setProperties([])
+                                    setName("")
+                                }}
+                                className="btn-default" >
+                                Cancel
+                            </button>
+                        )}
 
-                    <button type="submit" className="btn-primary">Save</button>
-                </div>
-            </form>
-            {!editedCategory && (
-                <table className="basic mt-4">
-                    <thead>
-                        <tr>
-                            <td>Category Name</td>
-                            <td>Parent Category</td>
-                            <td></td>
-                        </tr>
-                        {categories?.map((category) => (
+                        <button type="submit" className="btn-primary">Save</button>
+                    </div>
+                </form>
+                {!editedCategory && (
+                    <table className="basic mt-4">
+                        <thead>
                             <tr>
-                                <td>{category?.name}</td>
-                                <td>{category?.parent?.name}</td>
-                                <td>
-                                    <button className="btn-default mr-1" onClick={() => editCategory(category)}>Edit</button>
-                                    <button className="btn-red" onClick={() => deleteCategory(category)}>Delete</button>
-                                </td>
+                                <td>Category Name</td>
+                                <td>Parent Category</td>
+                                <td></td>
                             </tr>
-                        ))}
+                            {categories?.map((category) => (
+                                <tr>
+                                    <td>{category?.name}</td>
+                                    <td>{category?.parent?.name}</td>
+                                    <td>
+                                        <button className="btn-default mr-1" onClick={() => editCategory(category)}>Edit</button>
+                                        <button className="btn-red" onClick={() => deleteCategory(category)}>Delete</button>
+                                    </td>
+                                </tr>
+                            ))}
 
-                    </thead>
-                </table>
-            )}
+                        </thead>
+                    </table>
+                )}
 
-        </Layout>
+            </Layout>
+        )
+    }
+
+    return (
+        <>
+            <Layout>
+                <Spinner />
+            </Layout>
+        </>
     )
 }
+export async function getServerSideProps(context) {
+    const session = await getSession(context);
 
+    if (!session) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: process.env.NEXT_APP_URL + '/Auth'
 
-export async function getServerSideProps() {
-    const response = await axios.get(process.env.NEXT_APP_URL + "/api/category")
-    const data = response.data;
+            }
+        }
+    }
+
     return {
         props: {
-            data,
+            data: "Authenticated"
         },
     };
 

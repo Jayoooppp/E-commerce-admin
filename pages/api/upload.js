@@ -3,7 +3,6 @@ import { isAdminRequest } from "@/pages/api/auth/[...nextauth]";
 import { mongooseConnect } from "@/lib/mongoose";
 import axios from "axios";
 export default async function handle(req, res) {
-    console.log("hello")
     await mongooseConnect();
     await isAdminRequest(req, res);
     const form = new multiparty.Form();
