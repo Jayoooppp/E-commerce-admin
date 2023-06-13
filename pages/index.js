@@ -26,7 +26,7 @@ export async function getServerSideProps(context) {
     return {
       redirect: {
         permanent: false,
-        destination: 'http://localhost:3000/Auth'
+        destination: process.env.NEXT_APP_URL + '/Auth'
 
       }
     }
