@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import { useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 export default function Home() {
   const { data: session } = useSession();
   return <Layout>
@@ -15,4 +16,26 @@ export default function Home() {
       </div>
     </div>
   </Layout>
+}
+
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: 'http://localhost:3000/Auth'
+
+      }
+    }
+  }
+
+  return {
+    props: {
+      data: "Authenticated"
+    },
+  };
+
 }
