@@ -39,7 +39,7 @@ export default function Orders({ data }) {
                                         {order.address}
                                     </td>
                                     <td>
-                                        {order.line_items.map((l) => (
+                                        {order.line_items?.map((l) => (
                                             <>
                                                 {l.price_data?.product_data.name} X
                                                 {l.quantity} <br />
