@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner2";
 import { getSession } from "next-auth/react";
 
-export default function Orders({ data }) {
-    const [orders, setOrders] = useState(data || []);
+export default function Orders() {
+    const [orders, setOrders] = useState([]);
 
     useEffect(() => {
         axios.get("/api/orders")
