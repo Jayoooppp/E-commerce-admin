@@ -82,7 +82,7 @@ export async function getServerSideProps(context) {
         return {
             redirect: {
                 permanent: false,
-                destination: process.env.NEXT_APP_URL + '/Auth'
+                destination: process.env.NEXT_APP_URL + '/'
 
             }
         }
