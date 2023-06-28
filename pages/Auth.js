@@ -8,8 +8,7 @@ export default function Auth() {
 
     const [isPasswordHidden, setPasswordHidden] = useState(true);
     const [loginText, setLoginText] = useState("Sign in");
-    console.log(email)
-    console.log(password)
+   
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoginText("Loading.....")
