@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import Spinner from "@/components/Spinner2";
 import { getSession } from "next-auth/react";
 
-export default function Orders({ data }) {
-    const [orders, setOrders] = useState(data || []);
+export default function Orders() {
+    const [orders, setOrders] = useState([]);
 
     useEffect(() => {
         axios.get("/api/orders")
@@ -39,7 +39,7 @@ export default function Orders({ data }) {
                                         {order.address}
                                     </td>
                                     <td>
-                                        {order.line_items.map((l) => (
+                                        {order.line_items?.map((l) => (
                                             <>
                                                 {l.price_data?.product_data.name} X
                                                 {l.quantity} <br />
@@ -75,7 +75,6 @@ export async function getServerSideProps(context) {
             }
         }
     }
-
     return {
         props: {
             data: "Authenticated"
